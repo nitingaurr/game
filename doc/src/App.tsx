@@ -1,11 +1,16 @@
+import { Table } from "./components/table"
 
-import './App.css'
 
 function App() {
   return (
     <>
-    <div className = " text-sm text-red-500">
-    hah hacd 
+    <div className="">
+    <p className="  mt-5 text-center text-4xl text-amber-500">
+      tic-tac game
+    </p>
+    <div>
+      <Table/>
+    </div>
     </div>
 
     </>
