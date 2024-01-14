@@ -49,13 +49,14 @@ console.log(`data recieved from server ${data?.content}`)
          wsi?.send(JSON.stringify(val))
 
       }} >send</button>
-    {/* <p className="  mt-5 text-center text-4xl text-amber-500">
+    <p className="  mt-5 text-center text-4xl text-amber-500">
       tic-tac game
-    </p> */}
-     { data?.type === "message" && <p> client id {clientId} </p>  }
-     { data?.type === "clientId" && <p> server msg {data?.content} </p>  }
+    </p>
+     { data?.type ===  "clientId"&& <p> client id {clientId} </p>  }
+     { data?.type ===  "message"  && <p> server msg {data?.content} </p>  }
     <div>
-      {/* <Table/> */}
+    <div className="py-2 mt-4 h-20 font-medium border-l-4 border-red-900 "></div>
+      <Table/>
     </div>
     </div>
 
