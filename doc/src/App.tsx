@@ -8,6 +8,7 @@ function App() {
  const [wsi,setWsi] = useState< WebSocket | null>(null)
  const [data, setData] = useState< {type:string, content:string} | null>(null)
  const [clientId, setClientId] = useState<string | null>(null) 
+ const [clientSelectedValue , setClientSelectedValue] = useState<string | null>(null)
  
  useEffect(() => {
   const ws = new WebSocket(
@@ -55,9 +56,15 @@ console.log(`data recieved from server ${data?.content}`)
      { data?.type ===  "clientId"&& <p> client id {clientId} </p>  }
      { data?.type ===  "message"  && <p> server msg {data?.content} </p>  }
     <div>
-    <div className="py-2 mt-4 h-20 font-medium border-l-4 border-red-900 "></div>
-      <Table/>
+    
+      <Table wsi={wsi}/>
     </div>
+    <div className="group w-10 h-10 bg-gray-300 relative overflow-hidden">
+  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+    O
+  </div>
+</div>
+
     </div>
 
     </>
