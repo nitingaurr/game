@@ -1,10 +1,7 @@
 import { useState } from "react"
 
-type A = { 
-    wsi:WebSocket | null
-}
- 
-export function Table ( {wsi}:A) {
+
+export function Table () {
 
     const [ tableValues , setTableValues] = useState(null)
 

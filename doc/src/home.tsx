@@ -2,14 +2,23 @@ import { useState } from "react"
 import { useRecoilState, useSetRecoilState } from "recoil"
 import { WsInstance } from "./recoil/atoms/ws"
 import { useNavigate } from "react-router-dom"
+import { Roomid } from "./recoil/atoms/roomid"
 
 
 export function Home () {
 
     const navigate = useNavigate()
     const [ val , setVal ] = useState(1)
-    const setWsi = useSetRecoilState<WebSocket | null>(WsInstance)
-    const [roomid , setRoomid] = useState<string | null>(null)
+    const setWsi = useSetRecoilState<{
+        new (url: string | URL, protocols?: string | string[] | undefined): WebSocket;
+        prototype: WebSocket;
+        readonly CONNECTING: 0;
+        readonly OPEN: 1;
+        readonly CLOSING: 2;
+        readonly CLOSED: 3;
+    }>(WsInstance)
+
+    const [roomid , setRoomid] = useRecoilState<string >(Roomid)
 
     return(
         <>

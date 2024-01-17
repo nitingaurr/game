@@ -27,6 +27,28 @@ wss.on("connection",async(ws , req) => {
      ws.send(JSON.stringify({ type: 'clientId', content: clientId }));
      console.log("workinh till this line ")
 
+     function updateValues(roomId: string,  newClientId: string) {
+      
+        if (!allRoomIds[roomId]) {
+         
+          allRoomIds[roomId] = { value: 1, currentClientids: { one:newClientId } };
+          return console.log("roomid added client id added in a object ",allRoomIds[roomId].value, allRoomIds[roomId].currentClientids.one)
+        } 
+        if (allRoomIds[roomId].value === 1) {
+    
+            allRoomIds[roomId].currentClientids.two = newClientId;
+            allRoomIds[roomId].value = 2;
+            return console.log("allRoomids value updated to 2 and new clientid added", allRoomIds[roomId].value, allRoomIds[roomId].currentClientids)
+          // Update the value to 2
+          
+        } else if (allRoomIds[roomId].value === 2) {
+          return console.log("This room already has two members, so try to create a new room.");
+        }
+    
+      }
+
+
+
      ws.on('message',(message) => {
         
         // console.log("client"+ message)
@@ -38,7 +60,8 @@ wss.on("connection",async(ws , req) => {
         console.log('data type of the data coming to backend'+data.type ,data.roomid)
      
         if(data.type === 'roomid'){
-            allRoomIds[data.roomid]={value:1, currentClientids:{one:clientId}}
+            // allRoomIds[data.roomid]={value:1, currentClientids:{one:clientId}}
+            updateValues(data.roomid,clientId)
          ws.send(JSON.stringify({type:'roomid' , content:"done"}))
          console.log("room id recieved sucessfullyu and its done  ")
        
@@ -46,7 +69,16 @@ wss.on("connection",async(ws , req) => {
             ws.send(JSON.stringify({type:'roomid', content:"error"}))
             console.log("not getting type roomid from the client ")
         }
+        if(data.type === 'message' || data.type === 'event'){
+            const clientRoomid= data.roomid;
+            const ownclientid = data.clientId
+            updateValues(clientRoomid,ownclientid)
+            
 
+
+
+
+        }
 
         // const { cid, content} = JSON.parse(message.toString()) 
         // console.log('value of client id with message'+cid , content)
@@ -76,10 +108,3 @@ wss.on("connection",async(ws , req) => {
 
       
 })
-
-//so first when ws connection is created between client and server so  a client id is created for that client 
-//  and send the clientid to the client and now save the client in the server and saving this client ws instance and 
-// with the clientid key and when this client create or join room so first the client send the a room id for which we want
-// to create or join we store we extract the roomid and check with our array that store all roomis and we checks is this room id 
-// is exist or not if its the req to join and we find that room id then we assing the same roomid to this client and then they both 
-// they both the client with their client id are with this room id 
