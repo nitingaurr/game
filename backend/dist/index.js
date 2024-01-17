@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ws_1 = require("ws");
 const wss = new ws_1.WebSocketServer({ port: 8080 });
 const clientsID = [];
+const allRoomIds = {};
 const Instance = {};
 wss.on("connection", (ws, req) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('running and connect with new client');
@@ -28,8 +29,13 @@ wss.on("connection", (ws, req) => __awaiter(void 0, void 0, void 0, function* ()
         const data = JSON.parse(message.toString());
         console.log('data type of the data coming to backend' + data.type, data.roomid);
         if (data.type === 'roomid') {
+            allRoomIds[data.roomid] = { value: 1, currentClientids: { one: clientId } };
             ws.send(JSON.stringify({ type: 'roomid', content: "done" }));
             console.log("room id recieved sucessfullyu and its done  ");
+        }
+        else {
+            ws.send(JSON.stringify({ type: 'roomid', content: "error" }));
+            console.log("not getting type roomid from the client ");
         }
         // const { cid, content} = JSON.parse(message.toString()) 
         // console.log('value of client id with message'+cid , content)
@@ -56,3 +62,9 @@ wss.on("connection", (ws, req) => __awaiter(void 0, void 0, void 0, function* ()
         console.log('Client disconnected');
     });
 }));
+//so first when ws connection is created between client and server so  a client id is created for that client 
+//  and send the clientid to the client and now save the client in the server and saving this client ws instance and 
+// with the clientid key and when this client create or join room so first the client send the a room id for which we want
+// to create or join we store we extract the roomid and check with our array that store all roomis and we checks is this room id 
+// is exist or not if its the req to join and we find that room id then we assing the same roomid to this client and then they both 
+// they both the client with their client id are with this room id 
