@@ -3,6 +3,7 @@ import { useRecoilState, useSetRecoilState } from "recoil"
 import { WsInstance } from "./recoil/atoms/ws"
 import { useNavigate } from "react-router-dom"
 import { Roomid } from "./recoil/atoms/roomid"
+import { recoilClientid } from "./recoil/atoms/clientid"
 
 
 export function Home () {
@@ -19,6 +20,8 @@ export function Home () {
     }>(WsInstance)
 
     const [roomid , setRoomid] = useRecoilState<string >(Roomid)
+    const [cid ,setClientid] = useRecoilState<string>(recoilClientid)
+    // const [cid ,setClientid] = useState<string | null>(null)
 
     return(
         <>
@@ -68,20 +71,23 @@ export function Home () {
             const ws = new WebSocket(
                 "ws://localhost:8080"
                )
-               console.log('clicked button')
+               console.log('clicked button for create room  ')
                 ws.addEventListener('message',async (event) => {
                    const data = await JSON.parse(event.data)
-                   console.log("vlue of data coming to backend "+ data.type , data.content)
-                   console.log("getting data with value " + data.type)
+                   console.log("vlue of data coming to backend "+ data.type ,typeof(data.content) )
+                   console.log("getting data with value " + JSON.stringify(data))
                    if(data.type === 'clientId'){
+                    setClientid(data.content)
+                    console.log("ccccccccccccccccccccccciiiiiiiiiiiiiiiiiddddddddd",cid)
                     ws.send(JSON.stringify({type:"roomid",roomid:roomid }))
                     console.log("we recieved client id and sending room id ")
                     ws.addEventListener('message',async(event) => {
                         const dataRoomid = await JSON.parse(event.data)
                         console.log("room id sucessfull message received "+ dataRoomid.type , dataRoomid.content)
-                       if(dataRoomid.content === "done"){
+                       if(dataRoomid.content){
                         try {
                             console.log("navigation and reciol is not working")
+                            
                             setWsi(ws)
                             navigate("/play")
                         } catch (error) {
@@ -106,12 +112,56 @@ export function Home () {
        </>}
        { val === 2 && <> <div className="flex mt-10 justify-center ">
         <input 
+        onChange={(e) => {
+            setRoomid(e.target.value)
+            console.log("vlaue and type of roomid " + roomid , typeof roomid)
+        }}
         type="text"
         placeholder="type here..."
         className="py-2 px-3 rounded-lg border border-gray-900"  />
        </div>
        <div className="flex mt-5 justify-center">
-        <button className=" text-xl rounded-xl border px-7 py-2 text-gray-700 hover:bg-slate-200 active:bg-slate-300">
+        <button
+        onClick={() => {
+            const ws = new WebSocket(
+                "ws://localhost:8080"
+               )
+               console.log('clicked button for joining room')
+                ws.addEventListener('message',async (event) => {
+                   const data = await JSON.parse(event.data)
+                   console.log("vlue of data coming to backend "+ data.type , typeof(data.content))
+                   console.log("getting data with value " + JSON.stringify(data))
+                  
+                   if(data.type === 'clientId'){
+                    setClientid(data.content)
+                    console.log("value of client id is "+ cid)
+                    ws.send(JSON.stringify({type:"roomid",roomid:roomid }))
+                    console.log("we recieved client id and sending room id ")
+                    ws.addEventListener('message',async(event) => {
+                        const dataRoomid = await JSON.parse(event.data)
+                        console.log("room id sucessfull message received "+ dataRoomid.type , dataRoomid.content)
+                       if(dataRoomid.content){
+                        try {
+                            console.log("navigation and reciol is not working")
+                            setWsi(ws)
+                            navigate("/play")
+                        } catch (error) {
+                            console.log('error in navigation'+error) 
+                        }
+                       
+                       }
+                    
+                    })
+                    
+                   }else{
+                    console.log('data type is not working and and you dont get data with clietn id ')
+                   }
+               })
+
+              
+        } }
+        
+        className=" text-xl rounded-xl border px-7 py-2 text-gray-700 hover:bg-slate-200 active:bg-slate-300">
             Join
         </button>
        </div>

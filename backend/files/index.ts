@@ -24,7 +24,7 @@ wss.on("connection",async(ws , req) => {
     console.log("client id for "+ clientId)
      clientsID.push( clientId)
      Instance[clientId] = {ws}
-     ws.send(JSON.stringify({ type: 'clientId', content: clientId }));
+     ws.send(JSON.stringify({ type:'clientId', content: clientId }));
      console.log("workinh till this line ")
 
      function updateValues(roomId: string,  newClientId: string) {
@@ -62,22 +62,56 @@ wss.on("connection",async(ws , req) => {
         if(data.type === 'roomid'){
             // allRoomIds[data.roomid]={value:1, currentClientids:{one:clientId}}
             updateValues(data.roomid,clientId)
-         ws.send(JSON.stringify({type:'roomid' , content:"done"}))
+         ws.send(JSON.stringify({type:'roomid' , content:data.roomid}))
          console.log("room id recieved sucessfullyu and its done  ")
        
         }else{
-            ws.send(JSON.stringify({type:'roomid', content:"error"}))
+            ws.send(JSON.stringify({type:'roomid', content:null}))
             console.log("not getting type roomid from the client ")
         }
-        if(data.type === 'message' || data.type === 'event'){
-            const clientRoomid= data.roomid;
-            const ownclientid = data.clientId
-            updateValues(clientRoomid,ownclientid)
-            
-
-
-
-
+        console.log(' message response from the client'+JSON.stringify(data))
+        if(data.type === 'message' ){
+            const clientRoomid= data.rid;
+            console.log("type message working")
+            const ownclientid = data.cid
+            if(allRoomIds[clientRoomid]){
+                if(allRoomIds[clientRoomid].value=== 2){
+                    const one = allRoomIds[clientRoomid].currentClientids.one
+                    const two = allRoomIds[clientRoomid].currentClientids.two
+                    if(!(ownclientid === one)){
+                        const wsroom =Instance[one]?.ws
+                        if(wsroom){
+                            wsroom.send(JSON.stringify({type:"message",content:data.content}))
+                             console.log("message is going to first client and its wwwwwwwwwwwwwwwwwooooooooooooooorrrrrrrrrrkkkkkiiiiiiiiiinnnnnnnnnnnnnhhhhhhhhh")
+                        }
+                    }if(!(ownclientid === two)){
+                        if(two){
+                            const wsroom =Instance[two]?.ws
+                            if(wsroom){
+                                wsroom.send(JSON.stringify({type:"message",content:data.content}))
+                                 console.log("message is going to second  client and its wwwwwwwwwwwwwwwwwooooooooooooooorrrrrrrrrrkkkkkiiiiiiiiiinnnnnnnnnnnnnhhhhhhhhh")
+                            }
+                        }
+                       
+                    }
+                }
+            }
+        }
+        if(data.type === 'event'){
+            const clientRoomid= data.rid;
+            const ownclientid = data.cid
+            if(allRoomIds[clientRoomid]){
+                if(allRoomIds[clientRoomid].value=== 2){
+                    const one = allRoomIds[clientRoomid].currentClientids.one
+                    const two = allRoomIds[clientRoomid].currentClientids.two
+                    if(!(ownclientid === one)){
+                        const wsroom =Instance[one]?.ws
+                        if(wsroom){
+                            wsroom.send(JSON.stringify({type:"event",content:data.content}))
+                        }
+                    }
+                }
+            }
         }
 
         // const { cid, content} = JSON.parse(message.toString()) 
