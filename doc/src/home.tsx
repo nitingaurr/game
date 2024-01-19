@@ -84,7 +84,7 @@ export function Home () {
                     ws.addEventListener('message',async(event) => {
                         const dataRoomid = await JSON.parse(event.data)
                         console.log("room id sucessfull message received "+ dataRoomid.type , dataRoomid.content)
-                       if(dataRoomid.content){
+                       if(dataRoomid.content==='done'){
                         try {
                             console.log("navigation and reciol is not working")
                             
@@ -94,6 +94,8 @@ export function Home () {
                             console.log('error in navigation'+error) 
                         }
                        
+                       }else if(dataRoomid.content ==='undone'){
+                        alert("room is full create a new one")
                        }
                     
                     })
@@ -140,22 +142,25 @@ export function Home () {
                     ws.addEventListener('message',async(event) => {
                         const dataRoomid = await JSON.parse(event.data)
                         console.log("room id sucessfull message received "+ dataRoomid.type , dataRoomid.content)
-                       if(dataRoomid.content){
-                        try {
-                            console.log("navigation and reciol is not working")
-                            setWsi(ws)
-                            navigate("/play")
-                        } catch (error) {
-                            console.log('error in navigation'+error) 
-                        }
-                       
+                        if(dataRoomid.content==='done'){
+                            try {
+                                console.log("navigation and reciol is not working")
+                                
+                                setWsi(ws)
+                                navigate("/play")
+                            } catch (error) {
+                                console.log('error in navigation'+error) 
+                            }
+                           
+                           }else if(dataRoomid.content ==='undone'){
+                            alert("room is full create a new one")
+                           }
+                        
+                        })
+                        
+                       }else{
+                        console.log('data type is not working and and you dont get data with clietn id ')
                        }
-                    
-                    })
-                    
-                   }else{
-                    console.log('data type is not working and and you dont get data with clietn id ')
-                   }
                })
 
               

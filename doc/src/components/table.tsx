@@ -16,19 +16,19 @@ export function Table () {
             onClick={(e) => {
                 
             }}
-            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            className="absolute inset-0 flex items-center text-white  hover:text-gray-500 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               O
             </div>
           </div>
           <div className="h-17 border-l border-gray-900"></div>
           <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute inset-0 flex items-center text-white  hover:text-gray-500  justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               O
             </div>
           </div>
           <div className="h-17 border-l border-gray-900"></div>
           <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute inset-0 flex items-center justify-center text-white  hover:text-gray-500  opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               O
             </div>
           </div>
@@ -38,19 +38,19 @@ export function Table () {
       
         <div className="flex justify-center h-[15vh]">
         <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute inset-0 flex items-center justify-center text-white  hover:text-gray-500  opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               O
             </div>
           </div>
           <div className="h-17 border-l border-gray-900"></div>
           <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute inset-0 flex items-center justify-center text-white  hover:text-gray-500  opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               O
             </div>
           </div>
           <div className="h-17 border-l border-gray-900"></div>
           <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute inset-0 flex items-center justify-center text-white  hover:text-gray-500  opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               O
             </div>
           </div>
@@ -60,19 +60,19 @@ export function Table () {
       
         <div className="flex justify-center h-[15vh]">
         <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute inset-0 flex items-center justify-center text-white  hover:text-gray-500  opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               O
             </div>
           </div>
           <div className="h-17 border-l border-gray-900"></div>
           <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute inset-0 flex items-center justify-center text-white  hover:text-gray-500  opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               O
             </div>
           </div>
           <div className="h-17 border-l border-gray-900"></div>
           <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute inset-0 flex items-center justify-center text-white  hover:text-gray-500  opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               X
             </div>
           </div>

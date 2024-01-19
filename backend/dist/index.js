@@ -14,6 +14,7 @@ const wss = new ws_1.WebSocketServer({ port: 8080 });
 const clientsID = [];
 const allRoomIds = {};
 const Instance = {};
+const eventValues = {};
 wss.on("connection", (ws, req) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('running and connect with new client');
     const clientId = String(Math.round(Math.random() * 1000));
@@ -21,24 +22,33 @@ wss.on("connection", (ws, req) => __awaiter(void 0, void 0, void 0, function* ()
     clientsID.push(clientId);
     Instance[clientId] = { ws };
     ws.send(JSON.stringify({ type: 'clientId', content: clientId }));
-    console.log("workinh till this line ");
+    console.log("working till this line ");
     function updateValues(roomId, newClientId) {
         if (!allRoomIds[roomId]) {
             allRoomIds[roomId] = { value: 1, currentClientids: { one: newClientId } };
-            return console.log("roomid added client id added in a object ", allRoomIds[roomId].value, allRoomIds[roomId].currentClientids.one);
+            eventValues[newClientId] = { eventVal: 'O' };
+            const wsiEvent = Instance[newClientId].ws;
+            wsiEvent.send(JSON.stringify({ type: 'setEventValue', value: 'O' }));
+            //   return console.log("roomid added client id added in a object ",allRoomIds[roomId].value, allRoomIds[roomId].currentClientids.one)
+            return true;
         }
         if (allRoomIds[roomId].value === 1) {
             allRoomIds[roomId].currentClientids.two = newClientId;
             allRoomIds[roomId].value = 2;
-            return console.log("allRoomids value updated to 2 and new clientid added", allRoomIds[roomId].value, allRoomIds[roomId].currentClientids);
+            eventValues[newClientId] = { eventVal: 'X' };
+            const wsiEvent = Instance[newClientId].ws;
+            wsiEvent.send(JSON.stringify({ type: 'setEventValue', value: 'X' }));
+            // return console.log("allRoomids value updated to 2 and new clientid added", allRoomIds[roomId].value, allRoomIds[roomId].currentClientids)
+            return true;
             // Update the value to 2
         }
         else if (allRoomIds[roomId].value === 2) {
-            return console.log("This room already has two members, so try to create a new room.");
+            //   return console.log("This room already has two members, so try to create a new room.");
+            return false;
         }
     }
     ws.on('message', (message) => {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         // console.log("client"+ message)
         console.log("working insider messsages");
         console.log("message after parsing" + JSON.parse(message.toString()));
@@ -46,12 +56,17 @@ wss.on("connection", (ws, req) => __awaiter(void 0, void 0, void 0, function* ()
         console.log('data type of the data coming to backend' + data.type, data.roomid);
         if (data.type === 'roomid') {
             // allRoomIds[data.roomid]={value:1, currentClientids:{one:clientId}}
-            updateValues(data.roomid, clientId);
-            ws.send(JSON.stringify({ type: 'roomid', content: data.roomid }));
-            console.log("room id recieved sucessfullyu and its done  ");
+            if (updateValues(data.roomid, clientId)) {
+                ws.send(JSON.stringify({ type: 'roomid', content: 'done' }));
+                console.log("room id recieved sucessfullyu and its done  ");
+            }
+            else {
+                ws.send(JSON.stringify({ type: 'roomid', content: 'undone' }));
+                console.log("room id already had two members so try to create new room ");
+            }
         }
         else {
-            ws.send(JSON.stringify({ type: 'roomid', content: null }));
+            ws.send(JSON.stringify({ type: 'roomid', content: 'undone' }));
             console.log("not getting type roomid from the client ");
         }
         console.log(' message response from the client' + JSON.stringify(data));
@@ -93,6 +108,14 @@ wss.on("connection", (ws, req) => __awaiter(void 0, void 0, void 0, function* ()
                         const wsroom = (_c = Instance[one]) === null || _c === void 0 ? void 0 : _c.ws;
                         if (wsroom) {
                             wsroom.send(JSON.stringify({ type: "event", content: data.content }));
+                        }
+                    }
+                    if (!(ownclientid === two)) {
+                        if (two) {
+                            const wsroom = (_d = Instance[two]) === null || _d === void 0 ? void 0 : _d.ws;
+                            if (wsroom) {
+                                wsroom.send(JSON.stringify({ type: "event", content: data.content }));
+                            }
                         }
                     }
                 }

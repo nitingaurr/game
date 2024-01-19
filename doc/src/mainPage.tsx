@@ -8,7 +8,7 @@ import { Roomid } from "./recoil/atoms/roomid"
 import { recoilClientid } from "./recoil/atoms/clientid"
 
 export  function Play () {
-    const [ val, setVal ] = useState<string  | "">("")
+    const [ val, setVal ] = useState("")
     const wsi = useRecoilValue(WsInstance)
      const roomid = useRecoilValue(Roomid)
     const clientid = useRecoilValue(recoilClientid)
@@ -55,6 +55,7 @@ export  function Play () {
          <input
          placeholder="type here..."
          type="text"
+         value={val}
          onChange={(e) => {
          setVal(
           e.target.value
@@ -70,6 +71,7 @@ export  function Play () {
               rid: roomid,
               content: val
             }));
+            setVal('')
           } else {
             console.error('WebSocket connection is not open.');
           }
@@ -82,8 +84,8 @@ export  function Play () {
        </button>
          </div>
         </div>
-        <div className="text-lg text-gray-700 text-center">{data?.content}</div>
         </div>
+        <div className="  mt-4"><p className="text-center  text-4xl text-slate-700">Message: <span className="text-2xl text-slate-400 text-center">{data?.content}</span></p></div>
        </>
      )
 }

@@ -15,6 +15,8 @@ type RoomData = {
 const clientsID:string[]= []
 const allRoomIds :{[roomid:string]:RoomData} ={}
 const Instance:{[clientId:string]:{ws:any}} ={}
+const eventValues:{[clientid:string]:{eventVal:string}}={}
+
 
 wss.on("connection",async(ws , req) => {
 
@@ -25,24 +27,34 @@ wss.on("connection",async(ws , req) => {
      clientsID.push( clientId)
      Instance[clientId] = {ws}
      ws.send(JSON.stringify({ type:'clientId', content: clientId }));
-     console.log("workinh till this line ")
+     console.log("working till this line ")
 
      function updateValues(roomId: string,  newClientId: string) {
       
         if (!allRoomIds[roomId]) {
          
           allRoomIds[roomId] = { value: 1, currentClientids: { one:newClientId } };
-          return console.log("roomid added client id added in a object ",allRoomIds[roomId].value, allRoomIds[roomId].currentClientids.one)
+          eventValues[newClientId]={eventVal:'O'}
+          const wsiEvent = Instance[newClientId].ws
+          wsiEvent.send(JSON.stringify({type:'setEventValue',value:'O'}))
+            //   return console.log("roomid added client id added in a object ",allRoomIds[roomId].value, allRoomIds[roomId].currentClientids.one)
+            return true
         } 
         if (allRoomIds[roomId].value === 1) {
-    
+            
             allRoomIds[roomId].currentClientids.two = newClientId;
             allRoomIds[roomId].value = 2;
-            return console.log("allRoomids value updated to 2 and new clientid added", allRoomIds[roomId].value, allRoomIds[roomId].currentClientids)
+            eventValues[newClientId]={eventVal:'X'}
+            const wsiEvent = Instance[newClientId].ws
+            wsiEvent.send(JSON.stringify({type:'setEventValue',value:'X'}))
+            // return console.log("allRoomids value updated to 2 and new clientid added", allRoomIds[roomId].value, allRoomIds[roomId].currentClientids)
+            return true
           // Update the value to 2
           
         } else if (allRoomIds[roomId].value === 2) {
-          return console.log("This room already has two members, so try to create a new room.");
+
+        //   return console.log("This room already has two members, so try to create a new room.");
+        return false
         }
     
       }
@@ -60,13 +72,19 @@ wss.on("connection",async(ws , req) => {
         console.log('data type of the data coming to backend'+data.type ,data.roomid)
      
         if(data.type === 'roomid'){
+
             // allRoomIds[data.roomid]={value:1, currentClientids:{one:clientId}}
-            updateValues(data.roomid,clientId)
-         ws.send(JSON.stringify({type:'roomid' , content:data.roomid}))
-         console.log("room id recieved sucessfullyu and its done  ")
-       
+            if( updateValues(data.roomid,clientId)){
+                ws.send(JSON.stringify({type:'roomid' , content:'done'}))
+                console.log("room id recieved sucessfullyu and its done  ")
+              
+            }else{
+                ws.send(JSON.stringify({type:'roomid' , content:'undone'}))
+                console.log("room id already had two members so try to create new room ")
+              
+            }
         }else{
-            ws.send(JSON.stringify({type:'roomid', content:null}))
+            ws.send(JSON.stringify({type:'roomid', content:'undone'}))
             console.log("not getting type roomid from the client ")
         }
         console.log(' message response from the client'+JSON.stringify(data))
@@ -109,6 +127,14 @@ wss.on("connection",async(ws , req) => {
                         if(wsroom){
                             wsroom.send(JSON.stringify({type:"event",content:data.content}))
                         }
+                    }if(!(ownclientid === two)){
+                        if(two){
+                            const wsroom = Instance[two]?.ws
+                            if(wsroom){
+                                wsroom.send(JSON.stringify({type:"event",content:data.content}))
+                            }
+                        }
+                       
                     }
                 }
             }
