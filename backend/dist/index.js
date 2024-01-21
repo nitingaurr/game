@@ -23,24 +23,34 @@ wss.on("connection", (ws, req) => __awaiter(void 0, void 0, void 0, function* ()
     Instance[clientId] = { ws };
     ws.send(JSON.stringify({ type: 'clientId', content: clientId }));
     console.log("working till this line ");
-    function updateValues(roomId, newClientId) {
+    function updateValues(roomId, nature, newClientId) {
         if (!allRoomIds[roomId]) {
-            allRoomIds[roomId] = { value: 1, currentClientids: { one: newClientId } };
-            eventValues[newClientId] = { eventVal: 'O' };
-            const wsiEvent = Instance[newClientId].ws;
-            wsiEvent.send(JSON.stringify({ type: 'setEventValue', value: 'O' }));
-            //   return console.log("roomid added client id added in a object ",allRoomIds[roomId].value, allRoomIds[roomId].currentClientids.one)
-            return true;
+            if (nature === 'create') {
+                allRoomIds[roomId] = { value: 1, currentClientids: { one: newClientId } };
+                eventValues[newClientId] = { eventVal: 'O' };
+                const wsiEvent = Instance[newClientId].ws;
+                wsiEvent.send(JSON.stringify({ type: 'setEventValue', value: 'O' }));
+                //   return console.log("roomid added client id added in a object ",allRoomIds[roomId].value, allRoomIds[roomId].currentClientids.one)
+                return true;
+            }
+            else {
+                return false;
+            }
         }
         if (allRoomIds[roomId].value === 1) {
-            allRoomIds[roomId].currentClientids.two = newClientId;
-            allRoomIds[roomId].value = 2;
-            eventValues[newClientId] = { eventVal: 'X' };
-            const wsiEvent = Instance[newClientId].ws;
-            wsiEvent.send(JSON.stringify({ type: 'setEventValue', value: 'X' }));
-            // return console.log("allRoomids value updated to 2 and new clientid added", allRoomIds[roomId].value, allRoomIds[roomId].currentClientids)
-            return true;
-            // Update the value to 2
+            if (nature === 'join') {
+                allRoomIds[roomId].currentClientids.two = newClientId;
+                allRoomIds[roomId].value = 2;
+                eventValues[newClientId] = { eventVal: 'X' };
+                const wsiEvent = Instance[newClientId].ws;
+                wsiEvent.send(JSON.stringify({ type: 'setEventValue', value: 'X' }));
+                // return console.log("allRoomids value updated to 2 and new clientid added", allRoomIds[roomId].value, allRoomIds[roomId].currentClientids)
+                return true;
+                // Update the value to 2
+            }
+            else {
+                return false;
+            }
         }
         else if (allRoomIds[roomId].value === 2) {
             //   return console.log("This room already has two members, so try to create a new room.");
@@ -53,10 +63,10 @@ wss.on("connection", (ws, req) => __awaiter(void 0, void 0, void 0, function* ()
         console.log("working insider messsages");
         console.log("message after parsing" + JSON.parse(message.toString()));
         const data = JSON.parse(message.toString());
-        console.log('data type of the data coming to backend' + data.type, data.roomid);
+        console.log('data type of the data coming to backend' + data.type, data.roomid, data.nature);
         if (data.type === 'roomid') {
             // allRoomIds[data.roomid]={value:1, currentClientids:{one:clientId}}
-            if (updateValues(data.roomid, clientId)) {
+            if (updateValues(data.roomid, data.nature, clientId)) {
                 ws.send(JSON.stringify({ type: 'roomid', content: 'done' }));
                 console.log("room id recieved sucessfullyu and its done  ");
             }

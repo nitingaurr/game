@@ -79,7 +79,7 @@ export function Home () {
                    if(data.type === 'clientId'){
                     setClientid(data.content)
                     console.log("ccccccccccccccccccccccciiiiiiiiiiiiiiiiiddddddddd",cid)
-                    ws.send(JSON.stringify({type:"roomid",roomid:roomid }))
+                    ws.send(JSON.stringify({type:"roomid",nature:"create",roomid:roomid }))
                     console.log("we recieved client id and sending room id ")
                     ws.addEventListener('message',async(event) => {
                         const dataRoomid = await JSON.parse(event.data)
@@ -95,7 +95,8 @@ export function Home () {
                         }
                        
                        }else if(dataRoomid.content ==='undone'){
-                        alert("room is full create a new one")
+                        console.log(("room is full create a new one"))
+                        // alert("room is full create a new one")
                        }
                     
                     })
@@ -137,7 +138,7 @@ export function Home () {
                    if(data.type === 'clientId'){
                     setClientid(data.content)
                     console.log("value of client id is "+ cid)
-                    ws.send(JSON.stringify({type:"roomid",roomid:roomid }))
+                    ws.send(JSON.stringify({type:"roomid",nature:"join",roomid:roomid }))
                     console.log("we recieved client id and sending room id ")
                     ws.addEventListener('message',async(event) => {
                         const dataRoomid = await JSON.parse(event.data)
@@ -153,8 +154,9 @@ export function Home () {
                             }
                            
                            }else if(dataRoomid.content ==='undone'){
-                            alert("room is full create a new one")
-                           }
+                            // alert("room is full create a new one")
+                            console.log("room is full create a new one")
+                        }
                         
                         })
                         
