@@ -4,6 +4,7 @@ import { WsInstance } from "./recoil/atoms/ws"
 import { useNavigate } from "react-router-dom"
 import { Roomid } from "./recoil/atoms/roomid"
 import { recoilClientid } from "./recoil/atoms/clientid"
+import { initValue } from "./recoil/atoms/initval"
 
 
 export function Home () {
@@ -21,6 +22,7 @@ export function Home () {
 
     const [roomid , setRoomid] = useRecoilState<string >(Roomid)
     const [cid ,setClientid] = useRecoilState<string>(recoilClientid)
+    const setInitVal = useSetRecoilState(initValue)
     // const [cid ,setClientid] = useState<string | null>(null)
 
     return(
@@ -74,6 +76,10 @@ export function Home () {
                console.log('clicked button for create room  ')
                 ws.addEventListener('message',async (event) => {
                    const data = await JSON.parse(event.data)
+                   if(data.type === "setEventValue"){
+                    setInitVal(data.value)
+                    console.log("getting the intial value from the server ",data.value)
+                  }
                    console.log("vlue of data coming to backend "+ data.type ,typeof(data.content) )
                    console.log("getting data with value " + JSON.stringify(data))
                    if(data.type === 'clientId'){
@@ -101,9 +107,7 @@ export function Home () {
                     
                     })
                     
-                   }else{
-                    console.log('data type is not working and and you dont get data with clietn id ')
-                   }
+                   } 
                })
 
               
@@ -132,6 +136,10 @@ export function Home () {
                console.log('clicked button for joining room')
                 ws.addEventListener('message',async (event) => {
                    const data = await JSON.parse(event.data)
+                   if(data.type === "setEventValue"){
+                    setInitVal(data.value)
+                    console.log("getting the intial value from the server ",data.value)
+                  }
                    console.log("vlue of data coming to backend "+ data.type , typeof(data.content))
                    console.log("getting data with value " + JSON.stringify(data))
                   

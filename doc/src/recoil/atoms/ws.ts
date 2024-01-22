@@ -14,7 +14,7 @@ function defaultProfile () {
 function persist ({setSelf,onSet}) {
     onSet((value) => {
         if(value){
-            localStorage.setItem('phover',JSON.stringify(value))
+            localStorage.setItem('wsInstance',JSON.stringify(value))
         }
     })
 }
