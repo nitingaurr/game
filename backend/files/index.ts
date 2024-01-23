@@ -75,7 +75,7 @@ wss.on("connection",async(ws , req) => {
        console.log("message after parsing"+ JSON.parse(message.toString()))
        
        const data = JSON.parse(message.toString())
-        console.log('data type of the data coming to backend'+data.type ,data.roomid , data.nature)
+        console.log('data type of the data coming to backend'+JSON.stringify(data))
      
         if(data.type === 'roomid'){
 
@@ -122,6 +122,7 @@ wss.on("connection",async(ws , req) => {
             }
         }
         if(data.type === 'event'){
+            console.log("event data coming to backend ")
             const clientRoomid= data.rid;
             const ownclientid = data.cid
             if(allRoomIds[clientRoomid]){
@@ -131,13 +132,24 @@ wss.on("connection",async(ws , req) => {
                     if(!(ownclientid === one)){
                         const wsroom =Instance[one]?.ws
                         if(wsroom){
-                            wsroom.send(JSON.stringify({type:"event",content:data.content}))
+                            wsroom.send(JSON.stringify({type:"event",value:data.value,position:data.position}))
+                            if(two){
+                                const wsroom2 = Instance[two]?.ws 
+                                if(wsroom2){
+                                    wsroom2.send(JSON.stringify({type:"event",value:data.value,position:data.position}))   
+                                }
+                            }
+                           
                         }
                     }if(!(ownclientid === two)){
                         if(two){
                             const wsroom = Instance[two]?.ws
                             if(wsroom){
-                                wsroom.send(JSON.stringify({type:"event",content:data.content}))
+                                wsroom.send(JSON.stringify({type:"event",value:data.value,position:data.position}))
+                                const wsroom2= Instance[one]?.ws
+                                if(wsroom2){
+                                    wsroom2.send(JSON.stringify({type:"event",value:data.value,position:data.position}))   
+                                }
                             }
                         }
                        

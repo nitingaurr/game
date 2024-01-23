@@ -58,12 +58,12 @@ wss.on("connection", (ws, req) => __awaiter(void 0, void 0, void 0, function* ()
         }
     }
     ws.on('message', (message) => {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f;
         // console.log("client"+ message)
         console.log("working insider messsages");
         console.log("message after parsing" + JSON.parse(message.toString()));
         const data = JSON.parse(message.toString());
-        console.log('data type of the data coming to backend' + data.type, data.roomid, data.nature);
+        console.log('data type of the data coming to backend' + JSON.stringify(data));
         if (data.type === 'roomid') {
             // allRoomIds[data.roomid]={value:1, currentClientids:{one:clientId}}
             if (updateValues(data.roomid, data.nature, clientId)) {
@@ -108,6 +108,7 @@ wss.on("connection", (ws, req) => __awaiter(void 0, void 0, void 0, function* ()
             }
         }
         if (data.type === 'event') {
+            console.log("event data coming to backend ");
             const clientRoomid = data.rid;
             const ownclientid = data.cid;
             if (allRoomIds[clientRoomid]) {
@@ -117,14 +118,24 @@ wss.on("connection", (ws, req) => __awaiter(void 0, void 0, void 0, function* ()
                     if (!(ownclientid === one)) {
                         const wsroom = (_c = Instance[one]) === null || _c === void 0 ? void 0 : _c.ws;
                         if (wsroom) {
-                            wsroom.send(JSON.stringify({ type: "event", content: data.content }));
+                            wsroom.send(JSON.stringify({ type: "event", value: data.value, position: data.position }));
+                            if (two) {
+                                const wsroom2 = (_d = Instance[two]) === null || _d === void 0 ? void 0 : _d.ws;
+                                if (wsroom2) {
+                                    wsroom2.send(JSON.stringify({ type: "event", value: data.value, position: data.position }));
+                                }
+                            }
                         }
                     }
                     if (!(ownclientid === two)) {
                         if (two) {
-                            const wsroom = (_d = Instance[two]) === null || _d === void 0 ? void 0 : _d.ws;
+                            const wsroom = (_e = Instance[two]) === null || _e === void 0 ? void 0 : _e.ws;
                             if (wsroom) {
-                                wsroom.send(JSON.stringify({ type: "event", content: data.content }));
+                                wsroom.send(JSON.stringify({ type: "event", value: data.value, position: data.position }));
+                                const wsroom2 = (_f = Instance[one]) === null || _f === void 0 ? void 0 : _f.ws;
+                                if (wsroom2) {
+                                    wsroom2.send(JSON.stringify({ type: "event", value: data.value, position: data.position }));
+                                }
                             }
                         }
                     }
