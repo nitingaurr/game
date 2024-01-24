@@ -24,26 +24,78 @@ export function Table () {
     // const [yourEvent , setYourEvent] = useState('')
     const [enemyEvent , setEnemyEvent] = useState('')
     const wsi = useRecoilValue(WsInstance)
-    
+    const [currentPlayer, setCurrentPlayer] = useState("A");
+    const [turnTimeRemaining, setTurnTimeRemaining] = useState(45);
+  
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setTurnTimeRemaining((prevTime) => Math.max(prevTime - 1, 0));
+      }, 1000);
+  
+      return () => clearInterval(interval);
+    }, [currentPlayer, turnTimeRemaining]);
+  
+    const switchTurns = () => {
+      setCurrentPlayer((prevPlayer) => (prevPlayer === "A" ? "B" : "A"));
+      setTurnTimeRemaining(45);
+    };
+  
     const updateTicVal = (key: keyof M, value: string) => {
       setTableValues((prevMatrix) => ({
         ...prevMatrix,
-        [key]: value, // Update the specific value
+        [key]: value,
       }));
     };
   
- 
-  console.log('the newwwwwwwwwwwwwwwww vvvvvvvvvvvvvvvvvvvvvallllllllllueeeeeeeeeeeeeeeeee of intivalue',initVal)
-    wsi?.addEventListener('message', async (event: { data: any }) => {
-      const d = await event.data
-      const da = JSON.parse(d)
-      if(da.type === 'event'){
-       setEnemyEvent(da.value)
-       updateTicVal(da.position,da.value)
-       console.log("server sending event to us from another client",JSON.stringify(da))
+    const handlePlayerMove = (posit: keyof M) => {
+      if (tableValues[posit] === null && currentPlayer === "A") {
+        wsi?.send(
+          JSON.stringify({
+            type: "event",
+            position:posit,
+            cid: clientid,
+            rid: roomid,
+            value: initVal,
+          })
+        );
+        console.log("value register and send to server");
+        switchTurns();
       }
+    };
+  
+    wsi?.addEventListener("message", async (event: { data: any }) => {
+      const d = await event.data;
+      const da = JSON.parse(d);
+      if (da.type === "event") {
+        setEnemyEvent(da.value);
+        updateTicVal(da.position, da.value);
+        console.log(
+          "server sending event to us from another client",
+          JSON.stringify(da)
+        );
+        switchTurns();
+      }
+    });
+    
+  //   const updateTicVal = (key: keyof M, value: string) => {
+  //     setTableValues((prevMatrix) => ({
+  //       ...prevMatrix,
+  //       [key]: value, // Update the specific value
+  //     }));
+  //   };
+  
+ 
+  // console.log('the newwwwwwwwwwwwwwwww vvvvvvvvvvvvvvvvvvvvvallllllllllueeeeeeeeeeeeeeeeee of intivalue',initVal)
+  //   wsi?.addEventListener('message', async (event: { data: any }) => {
+  //     const d = await event.data
+  //     const da = JSON.parse(d)
+  //     if(da.type === 'event'){
+  //      setEnemyEvent(da.value)
+  //      updateTicVal(da.position,da.value)
+  //      console.log("server sending event to us from another client",JSON.stringify(da))
+  //     }
       
-    } )
+  //   } )
     
     console.log('the value of enemy event value coming from server of enemyeventvalue',enemyEvent)
     return (
@@ -54,18 +106,7 @@ export function Table () {
             { tableValues.a11 === null  && 
             <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
             <div
-            onClick={() => {
-                wsi?.send(JSON.stringify(
-                {
-                  type:"event",
-                  position:"a11",
-                  cid:clientid,
-                  rid:roomid,
-                  value:initVal
-                }
-                ))
-                console.log('value register and send to server')
-            }}
+            onClick={() => handlePlayerMove('a11')}
             className="absolute inset-0 flex items-center text-white  hover:text-gray-500 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {initVal}
             </div>   </div>}
@@ -85,18 +126,7 @@ export function Table () {
           { tableValues.a12 === null  && 
           <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
           <div
-            onClick={() => {
-                wsi?.send(JSON.stringify(
-                {
-                  type:"event",
-                  position:"a12",
-                  cid:clientid,
-                  rid:roomid,
-                  value:initVal
-                }
-                ))
-                console.log('value register and send to server')
-            }}
+             onClick={() => handlePlayerMove('a11')}
             className="absolute inset-0 flex items-center text-white  hover:text-gray-500 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {initVal}
             </div> 
@@ -117,18 +147,7 @@ export function Table () {
           { tableValues.a13 === null  &&
           <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
           <div
-            onClick={() => {
-                wsi?.send(JSON.stringify(
-                {
-                  type:"event",
-                  position:"a13",
-                  cid:clientid,
-                  rid:roomid,
-                  value:initVal
-                }
-                ))
-                console.log('value register and send to server')
-            }}
+             onClick={() => handlePlayerMove('a11')}
             className="absolute inset-0 flex items-center text-white  hover:text-gray-500 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {initVal}
             </div> 
@@ -153,18 +172,7 @@ export function Table () {
         { tableValues.a21 === null  && 
          <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
         <div
-            onClick={() => {
-                wsi?.send(JSON.stringify(
-                {
-                  type:"event",
-                  position:"a21",
-                  cid:clientid,
-                  rid:roomid,
-                  value:initVal
-                }
-                ))
-                console.log('value register and send to server')
-            }}
+             onClick={() => handlePlayerMove('a11')}
             className="absolute inset-0 flex items-center text-white  hover:text-gray-500 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {initVal}
             </div>
@@ -184,18 +192,7 @@ export function Table () {
           { tableValues.a22 === null  &&
            <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
           <div
-            onClick={() => {
-                wsi?.send(JSON.stringify(
-                {
-                  type:"event",
-                  position:"a22",
-                  cid:clientid,
-                  rid:roomid,
-                  value:initVal
-                }
-                ))
-                console.log('value register and send to server')
-            }}
+             onClick={() => handlePlayerMove('a22')}
             className="absolute inset-0 flex items-center text-white  hover:text-gray-500 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {initVal}
             </div> 
@@ -215,18 +212,7 @@ export function Table () {
           { tableValues.a23 === null  && 
           <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
           <div
-            onClick={() => {
-                wsi?.send(JSON.stringify(
-                {
-                  type:"event",
-                  position:"a23",
-                  cid:clientid,
-                  rid:roomid,
-                  value:initVal
-                }
-                ))
-                console.log('value register and send to server')
-            }}
+             onClick={() => handlePlayerMove('a23')}
             className="absolute inset-0 flex items-center text-white  hover:text-gray-500 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {initVal}
             </div> 
@@ -250,18 +236,7 @@ export function Table () {
         { tableValues.a31 === null  &&
          <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
         <div
-            onClick={() => {
-                wsi?.send(JSON.stringify(
-                {
-                  type:"event",
-                  position:"a31",
-                  cid:clientid,
-                  rid:roomid,
-                  value:initVal
-                }
-                ))
-                console.log('value register and send to server')
-            }}
+             onClick={() => handlePlayerMove('a31')}
             className="absolute inset-0 flex items-center text-white  hover:text-gray-500 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {initVal}
             </div>
@@ -282,18 +257,7 @@ export function Table () {
           { tableValues.a32 === null  &&
           <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
           <div
-            onClick={() => {
-                wsi?.send(JSON.stringify(
-                {
-                  type:"event",
-                  position:"a32",
-                  cid:clientid,
-                  rid:roomid,
-                  value:initVal
-                }
-                ))
-                console.log('value register and send to server')
-            }}
+             onClick={() => handlePlayerMove('a32')}
             className="absolute inset-0 flex items-center text-white  hover:text-gray-500 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {initVal}
             </div> 
@@ -314,18 +278,7 @@ export function Table () {
           { tableValues.a33 === null  &&  
           <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
           <div
-            onClick={() => {
-                wsi?.send(JSON.stringify(
-                {
-                  type:"event",
-                  position:"a33",
-                  cid:clientid,
-                  rid:roomid,
-                  value:initVal
-                }
-                ))
-                console.log('value register and send to server')
-            }}
+             onClick={() => handlePlayerMove('a33')}
             className="absolute inset-0 flex items-center text-white  hover:text-gray-500 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {initVal}
             </div> 
