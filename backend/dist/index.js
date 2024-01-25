@@ -71,7 +71,7 @@ wss.on("connection", (ws, req) => __awaiter(void 0, void 0, void 0, function* ()
                 console.log("room id recieved sucessfullyu and its done  ");
             }
             else {
-                ws.send(JSON.stringify({ type: 'roomid', content: 'undone' }));
+                ws.send(JSON.stringify({ type: 'roomid', content: 'undone', message: "room id already had two members so try to create new room " }));
                 console.log("room id already had two members so try to create new room ");
             }
         }

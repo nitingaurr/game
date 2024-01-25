@@ -85,12 +85,12 @@ wss.on("connection",async(ws , req) => {
                 console.log("room id recieved sucessfullyu and its done  ")
               
             }else{
-                ws.send(JSON.stringify({type:'roomid' , content:'undone'}))
+                ws.send(JSON.stringify({type:'roomid' , content:'undone',message:"room id already had two members so try to create new room "}))
                 console.log("room id already had two members so try to create new room ")
               
             }
         }else{
-            ws.send(JSON.stringify({type:'roomid', content:'undone'}))
+            ws.send(JSON.stringify({type:'roomid', content:'undone' }))
             console.log("not getting type roomid from the client ")
         }
         console.log(' message response from the client'+JSON.stringify(data))

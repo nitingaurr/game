@@ -11,6 +11,7 @@ export function Home () {
 
     const navigate = useNavigate()
     const [ val , setVal ] = useState(1)
+    const [error , setError ] = useState<string | null>(null)
     const setWsi = useSetRecoilState<{
         new (url: string | URL, protocols?: string | string[] | undefined): WebSocket;
         prototype: WebSocket;
@@ -102,7 +103,7 @@ export function Home () {
                        
                        }else if(dataRoomid.content ==='undone'){
                         console.log(("room is full create a new one"))
-                        // alert("room is full create a new one")
+                        setError("room is full create a new one")
                        }
                     
                     })
@@ -160,10 +161,9 @@ export function Home () {
                             } catch (error) {
                                 console.log('error in navigation'+error) 
                             }
-                           
                            }else if(dataRoomid.content ==='undone'){
-                            // alert("room is full create a new one")
                             console.log("room is full create a new one")
+                            setError("room is full create a new one")
                         }
                         
                         })
@@ -183,6 +183,12 @@ export function Home () {
        </>}
         </div>
         </div>
+        {
+            error ? <div className="flex items-center ">
+            <p className="text-xl text-red-500 text-center">{error}</p>
+        </div> : null
+       }
+        
         </>
     )
 }

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRecoilValue } from "recoil"
 import { WsInstance } from "../recoil/atoms/ws"
 import { initValue } from "../recoil/atoms/initval"
@@ -31,7 +31,7 @@ export function Table () {
       const interval = setInterval(() => {
         setTurnTimeRemaining((prevTime) => Math.max(prevTime - 1, 0));
       }, 1000);
-  
+      
       return () => clearInterval(interval);
     }, [currentPlayer, turnTimeRemaining]);
   
@@ -100,6 +100,7 @@ export function Table () {
     console.log('the value of enemy event value coming from server of enemyeventvalue',enemyEvent)
     return (
       <>
+      {turnTimeRemaining}
         <div className=" border border-bg-gray-500 h-[45vh] w-[40vh] rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
         <div className="flex justify-center h-[15vh]">
           
@@ -126,7 +127,7 @@ export function Table () {
           { tableValues.a12 === null  && 
           <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
           <div
-             onClick={() => handlePlayerMove('a11')}
+             onClick={() => handlePlayerMove('a12')}
             className="absolute inset-0 flex items-center text-white  hover:text-gray-500 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {initVal}
             </div> 
@@ -147,7 +148,7 @@ export function Table () {
           { tableValues.a13 === null  &&
           <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
           <div
-             onClick={() => handlePlayerMove('a11')}
+             onClick={() => handlePlayerMove('a13')}
             className="absolute inset-0 flex items-center text-white  hover:text-gray-500 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {initVal}
             </div> 
@@ -172,7 +173,7 @@ export function Table () {
         { tableValues.a21 === null  && 
          <div className="group relative hover:text-8xl w-[13vh] text-center text-slate-300 hover:text-gray-500">
         <div
-             onClick={() => handlePlayerMove('a11')}
+             onClick={() => handlePlayerMove('a21')}
             className="absolute inset-0 flex items-center text-white  hover:text-gray-500 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               {initVal}
             </div>
